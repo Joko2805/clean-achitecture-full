@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  categoryId Int       @id @default(autoincrement()) @map("category_id") @db.UnsignedSmallInt
+  name       String    @unique(map: "uni_categories_name") @db.VarChar(100)
+  userId     Int       @map("user_id") @db.UnsignedSmallInt
+  status     Boolean   @default(false)
+  users      User      @relation(fields: [userId], references: [userId], onUpdate: Restrict, map: "fk_categories_user_id")
+  products   Product[]
+
+  @@index([userId], map: "fk_categories_user_id")
+  @@map("categories")
+}
+
+model Product {
+  productId   Int      @id @default(autoincrement()) @map("product_id") @db.UnsignedSmallInt
+  name        String   @db.VarChar(100)
+  description String?  @db.VarChar(100)
+  categoryId  Int      @map("category_id") @db.UnsignedSmallInt
+  userId      Int      @map("user_id") @db.UnsignedSmallInt
+  status      Boolean  @default(false)
+  category    Category @relation(fields: [categoryId], references: [categoryId], onUpdate: Restrict, map: "fk_products_category_id")
+  user        User     @relation(fields: [userId], references: [userId], onUpdate: Restrict, map: "fk_products_user_id")
+
+  @@index([categoryId], map: "fk_products_category_id")
+  @@index([userId], map: "fk_products_user_id")
+  @@map("products")
+}
+
+model Role {
+  roleId Int        @id @default(autoincrement()) @map("role_id") @db.UnsignedSmallInt
+  name   String     @db.VarChar(50)
+  status Boolean    @default(true)
+  users  UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  userId Int  @map("user_id") @db.UnsignedSmallInt
+  roleId Int  @map("role_id") @db.UnsignedSmallInt
+  role   Role @relation(fields: [roleId], references: [roleId], onUpdate: Restrict, map: "fk_user_roles_role_id")
+  user   User @relation(fields: [userId], references: [userId], onUpdate: Restrict, map: "fk_user_roles_user_id")
+
+  @@id([userId, roleId])
+  @@index([roleId], map: "idx_user_roles_role_id")
+  @@index([userId], map: "idx_user_roles_user_id")
+  @@map("user_roles")
+}
+
+model User {
+  userId         Int         @id @default(autoincrement()) @map("user_id") @db.UnsignedSmallInt
+  email          String      @unique(map: "uni_users_email") @db.VarChar(100)
+  confirmedEmail Boolean     @default(false) @map("confirmed_email")
+  password       String      @db.VarChar(60)
+  gender         UsersGender
+  address        String?     @db.VarChar(150)
+  img            String?     @db.VarChar(100)
+  createAt       DateTime    @default(now()) @map("created_at") @db.DateTime(0)
+  status         Boolean     @default(true)
+  categories     Category[]
+  products       Product[]
+  roles          UserRole[]
+
+  @@map("users")
+}
+
+enum UsersGender {
+  male
+  female
+}

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES6", // Objetivo de compilación, por ejemplo, ES5, ES6, etc.
+    "module": "CommonJS", // Sistema de módulos, como CommonJS, ESNext, etc.
+    "outDir": "./dist", // Directorio de salida para archivos compilados
+    "rootDir": "./src", // Directorio raíz de archivos fuente
+    "strict": true, // Habilita todas las verificaciones de estrictitud
+    "esModuleInterop": true, // Permite interoperabilidad con módulos ES y CommonJS
+    "forceConsistentCasingInFileNames": true, // Asegura consistencia en el uso de mayúsculas y minúsculas en nombres de archivo
+    "skipLibCheck": true, // Omite comprobación de tipos en bibliotecas externas
+    "strictNullChecks": true, // Requiere manejo explícito de valores nulos y no definidos
+    "noImplicitAny": true // Previene el uso de tipos implícitos "any"
+  },
+  "include": ["./src/**/*"], // Incluir todos los archivos TypeScript en el directorio src
+  "exclude": ["node_modules", "./dist"] // Excluir ciertos directorios o archivos
+}
